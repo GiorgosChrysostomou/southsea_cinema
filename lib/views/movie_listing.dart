@@ -11,6 +11,7 @@ class MovieListing extends StatefulWidget {
 
 class _MovieListingState extends State<MovieListing> {
   int _quantity = 0;
+  String _message = '';
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +51,9 @@ class _MovieListingState extends State<MovieListing> {
                     DropdownMenuItem(value: 0, child: Text('0')),
                     DropdownMenuItem(value: 1, child: Text('1')),
                     DropdownMenuItem(value: 2, child: Text('2')),
+                    DropdownMenuItem(value: 3, child: Text('3')),
+                    DropdownMenuItem(value: 4, child: Text('4')),
+                    DropdownMenuItem(value: 5, child: Text('5')),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -59,7 +63,22 @@ class _MovieListingState extends State<MovieListing> {
               SizedBox(width: 12),
               Text('Adult (£7.50)'),
             ],
-          )
+          ),
+          SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                _message = 'Added $_quantity tickets';
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: cinemaBrand,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('ADD TO ORDER'),
+          ),
+          SizedBox(height: 16),
+          Text(_message, style: TextStyle(fontSize: 16)),
         ],
       ),
     );
