@@ -15,7 +15,25 @@ class MovieListing extends StatelessWidget {
         elevation: 0,
       ),
       drawer: const NavDrawer(),
-      body: const Text('DRACULA (1931) (PG)', style: TextStyle(fontSize: 32)),
+      body: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('DRACULA (1931) (PG)', style: TextStyle(fontSize: 32)),
+          SizedBox(height: 35),
+          Text('Southsea Cinema Room', style: TextStyle(fontSize: 16)),
+          SizedBox(height: 10),
+          Text('Thrusday 22 Oct 2026, 18:00 - ends at 19:14',
+              style: TextStyle(fontSize: 16)),
+          SizedBox(height: 30),
+          Text(
+              'Please note that Discounts / Membership Benefits will be applied once you have selected your ticckets',
+              style: TextStyle(fontSize: 16)),
+          SizedBox(height: 10),
+          Text('Select Quantities(up to 5 in total',
+              style: TextStyle(fontSize: 16)),
+          SizedBox(height: 30),
+        ],
+      ),
     );
   }
 }
