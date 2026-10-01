@@ -15,7 +15,7 @@ class MovieListing extends StatelessWidget {
         elevation: 0,
       ),
       drawer: const NavDrawer(),
-      body: const SizedBox.shrink(),
+      body: const Text('DRACULA (1931) (PG)', style: TextStyle(fontSize: 32)),
     );
   }
 }
