@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/widgets/nav_drawer.dart';
+import 'package:southsea_cinema/models/movie.dart';
+import 'package:southsea_cinema/repositories/movie_repository.dart';
 
 class MovieListing extends StatefulWidget {
   const MovieListing({super.key});
@@ -12,6 +14,7 @@ class MovieListing extends StatefulWidget {
 class _MovieListingState extends State<MovieListing> {
   int _quantity = 0;
   String _message = '';
+  final Movie _movie = MovieRepository().getMovies()[0];
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +64,7 @@ class _MovieListingState extends State<MovieListing> {
                     });
                   }),
               SizedBox(width: 12),
-              Text('Adult (£7.50)'),
+              Text('Adult (${_movie.formattedPrice})'),
             ],
           ),
           SizedBox(height: 24),
