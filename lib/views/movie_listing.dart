@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
-import 'package:southsea_cinema/widgets/nav_drawer.dart';
 import 'package:southsea_cinema/models/movie.dart';
-import 'package:southsea_cinema/repositories/movie_repository.dart';
+import 'package:southsea_cinema/widgets/nav_drawer.dart';
 
 class MovieListing extends StatefulWidget {
-  const MovieListing({super.key});
+  final Movie movie;
+
+  const MovieListing({super.key, required this.movie});
 
   @override
   State<MovieListing> createState() => _MovieListingState();
@@ -14,43 +15,69 @@ class MovieListing extends StatefulWidget {
 class _MovieListingState extends State<MovieListing> {
   int _quantity = 0;
   String _message = '';
-  final Movie _movie = MovieRepository().getMovies()[0];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text(appTitle, style: cinemaHeaderStyle),
         backgroundColor: cinemaSurface,
         iconTheme: const IconThemeData(color: cinemaBrand),
         elevation: 0,
       ),
       drawer: const NavDrawer(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('DRACULA (1931) (PG)', style: TextStyle(fontSize: 32)),
-          SizedBox(height: 35),
-          Text('Southsea Cinema Room', style: TextStyle(fontSize: 16)),
-          SizedBox(height: 10),
-          Text('Thrusday 22 Oct 2026, 18:00 - ends at 19:14',
-              style: TextStyle(fontSize: 16)),
-          SizedBox(height: 30),
-          Text(
-              'Please note that Discounts / Membership Benefits will be applied once you have selected your ticckets',
-              style: TextStyle(fontSize: 16)),
-          SizedBox(height: 10),
-          Text('Select Quantities(up to 5 in total)',
-              style: TextStyle(fontSize: 16)),
-          SizedBox(height: 30),
-          Text('Tickets',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          SizedBox(height: 12),
-          Row(
-            children: [
-              DropdownButton<int>(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${widget.movie.title} (${widget.movie.ageRating})',
+              style: const TextStyle(fontSize: 32),
+            ),
+            const SizedBox(height: 16),
+            Image.asset(
+              widget.movie.posterPath,
+              width: 160,
+              height: 240,
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(height: 16),
+            Text(widget.movie.synopsis, style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 24),
+            const Text('Southsea Cinema Room', style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 10),
+            Text(
+              '${widget.movie.screeningTime} (${widget.movie.runtime})',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 30),
+            const Text(
+              'Please note that Discounts / Membership Benefits will be applied once you have selected your tickets',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Select Quantities (up to 5 in total)',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 30),
+            const Text(
+              'Tickets',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                DropdownButton<int>(
                   value: _quantity,
-                  items: [
+                  items: const [
                     DropdownMenuItem(value: 0, child: Text('0')),
                     DropdownMenuItem(value: 1, child: Text('1')),
                     DropdownMenuItem(value: 2, child: Text('2')),
@@ -62,27 +89,30 @@ class _MovieListingState extends State<MovieListing> {
                     setState(() {
                       _quantity = value!;
                     });
-                  }),
-              SizedBox(width: 12),
-              Text('Adult (${_movie.formattedPrice})'),
-            ],
-          ),
-          SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _message = 'Added $_quantity tickets';
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: cinemaBrand,
-              foregroundColor: Colors.white,
+                  },
+                ),
+                const SizedBox(width: 12),
+                Text('Adult (${widget.movie.formattedPrice})'),
+              ],
             ),
-            child: Text('ADD TO ORDER'),
-          ),
-          SizedBox(height: 16),
-          Text(_message, style: TextStyle(fontSize: 16)),
-        ],
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _message =
+                      'Added $_quantity tickets for ${widget.movie.title}';
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: cinemaBrand,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('ADD TO ORDER'),
+            ),
+            const SizedBox(height: 16),
+            Text(_message, style: const TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
     );
   }
