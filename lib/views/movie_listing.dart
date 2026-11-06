@@ -3,6 +3,7 @@ import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/models/movie.dart';
 import 'package:southsea_cinema/widgets/nav_drawer.dart';
 import 'package:southsea_cinema/widgets/primary_button.dart';
+import 'package:southsea_cinema/repositories/basket_repository.dart';
 
 class MovieListing extends StatefulWidget {
   final Movie movie;
@@ -47,9 +48,15 @@ class _MovieListingState extends State<MovieListing> {
               fit: BoxFit.cover,
             ),
             const SizedBox(height: 16),
-            Text(widget.movie.synopsis, style: const TextStyle(fontSize: 16)),
+            Text(
+              widget.movie.synopsis,
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 24),
-            const Text('Southsea Cinema Room', style: TextStyle(fontSize: 16)),
+            const Text(
+              'Southsea Cinema Room',
+              style: TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 10),
             Text(
               '${widget.movie.screeningTime} (${widget.movie.runtime})',
@@ -68,7 +75,10 @@ class _MovieListingState extends State<MovieListing> {
             const SizedBox(height: 30),
             const Text(
               'Tickets',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 12),
             Row(
@@ -94,17 +104,32 @@ class _MovieListingState extends State<MovieListing> {
               ],
             ),
             const SizedBox(height: 24),
-            PrimaryButton( 
+            PrimaryButton(
               label: 'ADD TO ORDER',
-              onPressed:(){
+              onPressed: () {
+                if (_quantity == 0) {
+                  setState(() {
+                    _message = 'Please select at least one ticket';
+                  });
+                  return;
+                }
+
                 setState(() {
-                  _message = 'Added $_quantity tickets for ${widget.movie.title}';
-            
+                  basketRepository.addTicket(
+                    widget.movie,
+                    quantity: _quantity,
+                  );
+
+                  _message =
+                      'Added $_quantity tickets for ${widget.movie.title}';
                 });
               },
             ),
             const SizedBox(height: 16),
-            Text(_message, style: const TextStyle(fontSize: 16)),
+            Text(
+              _message,
+              style: const TextStyle(fontSize: 16),
+            ),
           ],
         ),
       ),

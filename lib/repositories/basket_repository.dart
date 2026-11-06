@@ -1,4 +1,3 @@
-
 import 'package:southsea_cinema/models/movie.dart';
 
 class BasketItem {
@@ -65,3 +64,5 @@ class BasketRepository {
     _items.clear();
   }
 }
+
+final BasketRepository basketRepository = BasketRepository();
