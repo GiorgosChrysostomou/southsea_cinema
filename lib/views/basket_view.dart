@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/repositories/basket_repository.dart';
 import 'package:southsea_cinema/widgets/primary_button.dart';
+import 'package:southsea_cinema/widgets/nav_drawer.dart';
 
 class BasketView extends StatefulWidget {
   const BasketView({super.key});
@@ -20,6 +20,7 @@ class _BasketViewState extends State<BasketView> {
       appBar: AppBar(
         title: const Text('My Basket'),
       ),
+      drawer: const NavDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: items.isEmpty
@@ -44,7 +45,6 @@ class _BasketViewState extends State<BasketView> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
                   Expanded(
                     child: ListView.builder(
                       itemCount: items.length,
@@ -89,9 +89,7 @@ class _BasketViewState extends State<BasketView> {
                       },
                     ),
                   ),
-
                   const Divider(color: cinemaFontMuted),
-
                   Text(
                     'Total: £${basketRepository.total.toStringAsFixed(2)}',
                     style: const TextStyle(
@@ -100,9 +98,7 @@ class _BasketViewState extends State<BasketView> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
                   PrimaryButton(
                     label: 'CLEAR BASKET',
                     onPressed: () {
@@ -111,9 +107,7 @@ class _BasketViewState extends State<BasketView> {
                       });
                     },
                   ),
-
                   const SizedBox(height: 12),
-
                   PrimaryButton(
                     label: 'CHECKOUT',
                     onPressed: () {
