@@ -3,6 +3,8 @@ import 'package:southsea_cinema/models/movie.dart';
 import 'package:southsea_cinema/repositories/movie_repository.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('MovieRepository unit tests', () {
     test('getMovies returns two movies', () {
       final MovieRepository repository = MovieRepository();
@@ -44,6 +46,38 @@ void main() {
       final Movie? movie = repository.getMovieById('non-existent');
 
       expect(movie, isNull);
+    });
+  });
+
+  group('MovieRepository asset loading', () {
+    test('loadMoviesFromAsset reads every film from movies.json', () async {
+      final MovieRepository repository = MovieRepository();
+      final List<Movie> movies = await repository.loadMoviesFromAsset();
+
+      expect(movies.length, 2);
+
+      expect(movies[0].id, 'dracula');
+      expect(movies[0].title, 'Dracula (1931)');
+      expect(movies[0].ageRating, 'PG');
+      expect(movies[0].ticketPrice, 7.50);
+      expect(movies[0].posterPath, 'assets/images/dracula.jpg');
+
+      expect(movies[1].id, 'halloween');
+      expect(movies[1].title, 'Halloween (1978)');
+      expect(movies[1].ageRating, '18');
+      expect(movies[1].ticketPrice, 7.50);
+      expect(movies[1].posterPath, 'assets/images/halloween.jpg');
+    });
+
+    test('loadMoviesFromAsset matches getMovies', () async {
+      final MovieRepository repository = MovieRepository();
+      final List<Movie> loaded = await repository.loadMoviesFromAsset();
+      final List<Movie> hardCoded = repository.getMovies();
+
+      expect(loaded.length, hardCoded.length);
+      for (int i = 0; i < loaded.length; i++) {
+        expect(loaded[i].toJson(), hardCoded[i].toJson());
+      }
     });
   });
 }

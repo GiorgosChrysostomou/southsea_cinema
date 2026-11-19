@@ -32,17 +32,15 @@ void main() {
   });
 
   group('Movie listing', () {
-    testWidgets('drawer opens the listing with the film details',
+    testWidgets('BOOK TICKETS opens the listing with the film details',
         (WidgetTester tester) async {
       await tester.pumpWidget(const SouthseaCinemaApp());
 
-      await tester.tap(find.byIcon(Icons.menu));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Movie Listing'));
+      await tester.tap(find.text('BOOK TICKETS').first);
       await tester.pumpAndSettle();
 
       expect(find.byType(MovieListing), findsOneWidget);
-      expect(find.text('DRACULA (1931) (PG)'), findsOneWidget);
+      expect(find.text('Dracula (1931) (PG)'), findsOneWidget);
       expect(find.text('Adult (£7.50)'), findsOneWidget);
       expect(find.text('ADD TO ORDER'), findsOneWidget);
     });
@@ -51,22 +49,26 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(const SouthseaCinemaApp());
 
-      await tester.tap(find.byIcon(Icons.menu));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Movie Listing'));
+      await tester.tap(find.text('BOOK TICKETS').first);
       await tester.pumpAndSettle();
 
-      expect(find.text('Added 2 tickets'), findsNothing);
+      expect(find.text('Added 2 tickets for Dracula (1931)'), findsNothing);
 
+      await tester.ensureVisible(find.byType(DropdownButton<int>));
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(DropdownButton<int>));
       await tester.pumpAndSettle();
       await tester.tap(find.text('2').last);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'ADD TO ORDER'));
+      final Finder addButton =
+          find.widgetWithText(ElevatedButton, 'ADD TO ORDER');
+      await tester.ensureVisible(addButton);
+      await tester.pumpAndSettle();
+      await tester.tap(addButton);
       await tester.pump();
 
-      expect(find.text('Added 2 tickets'), findsOneWidget);
+      expect(find.text('Added 2 tickets for Dracula (1931)'), findsOneWidget);
     });
   });
 }

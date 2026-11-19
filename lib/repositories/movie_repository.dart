@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:southsea_cinema/models/movie.dart';
 
 class MovieRepository {
@@ -35,5 +38,16 @@ class MovieRepository {
       }
     }
     return null;
+  }
+
+  Future<List<Movie>> loadMoviesFromAsset([
+    String path = 'assets/data/movies.json',
+  ]) async {
+    final String raw = await rootBundle.loadString(path);
+    final List<dynamic> decoded = jsonDecode(raw) as List<dynamic>;
+
+    return decoded
+        .map((item) => Movie.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 }

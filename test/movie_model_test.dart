@@ -55,4 +55,52 @@ void main() {
       expect(movie.formattedPrice, '£7.50');
     });
   });
+
+  group('Movie JSON', () {
+    final Map<String, dynamic> json = {
+      'id': 'dracula',
+      'title': 'Dracula (1931)',
+      'synopsis': 'Count Dracula travels to London.',
+      'ageRating': 'PG',
+      'runtime': '75 min',
+      'screeningTime': 'Thursday 22 Oct 2026, 18:00',
+      'ticketPrice': 7.5,
+      'posterPath': 'assets/images/dracula.jpg',
+    };
+
+    test('fromJson reads all fields', () {
+      final Movie movie = Movie.fromJson(json);
+
+      expect(movie.id, 'dracula');
+      expect(movie.title, 'Dracula (1931)');
+      expect(movie.synopsis, 'Count Dracula travels to London.');
+      expect(movie.ageRating, 'PG');
+      expect(movie.runtime, '75 min');
+      expect(movie.screeningTime, 'Thursday 22 Oct 2026, 18:00');
+      expect(movie.ticketPrice, 7.5);
+      expect(movie.posterPath, 'assets/images/dracula.jpg');
+    });
+
+    test('fromJson accepts a whole-number price', () {
+      final Movie movie = Movie.fromJson({...json, 'ticketPrice': 8});
+
+      expect(movie.ticketPrice, 8.0);
+      expect(movie.formattedPrice, '£8.00');
+    });
+
+    test('toJson writes all fields', () {
+      final Movie movie = Movie.fromJson(json);
+
+      expect(movie.toJson(), json);
+    });
+
+    test('toJson then fromJson keeps a whole-number price', () {
+      final Movie original = Movie.fromJson({...json, 'ticketPrice': 8});
+      final Movie copy = Movie.fromJson(original.toJson());
+
+      expect(copy.ticketPrice, 8.0);
+      expect(copy.id, original.id);
+      expect(copy.title, original.title);
+    });
+  });
 }
