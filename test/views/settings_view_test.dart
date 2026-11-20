@@ -14,6 +14,13 @@ Future<void> pumpSettings(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> tapSave(WidgetTester tester) async {
+  await tester.ensureVisible(find.text('SAVE CHANGES'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('SAVE CHANGES'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   setUp(() {
     SharedPreferencesAsyncPlatform.instance =
@@ -45,6 +52,21 @@ void main() {
     expect(find.text('Please enter your last name'), findsOneWidget);
     expect(find.text('Please enter a valid email address'), findsOneWidget);
     expect(find.text('Please enter your phone number'), findsOneWidget);
+  });
+
+  testWidgets('Empty preferences leave the form empty and news off',
+      (WidgetTester tester) async {
+    await pumpSettings(tester);
+
+    final Finder fields = find.byType(TextFormField);
+    for (int i = 0; i < 4; i++) {
+      final TextFormField field = tester.widget<TextFormField>(fields.at(i));
+      expect(field.controller!.text, isEmpty);
+    }
+
+    final SwitchListTile newsSwitch =
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile));
+    expect(newsSwitch.value, isFalse);
   });
 
   testWidgets('Saved profile is loaded when the page opens',
@@ -85,10 +107,7 @@ void main() {
     await tester.tap(find.byType(SwitchListTile));
     await tester.pumpAndSettle();
 
-    await tester.ensureVisible(find.text('SAVE CHANGES'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('SAVE CHANGES'));
-    await tester.pumpAndSettle();
+    await tapSave(tester);
 
     expect(find.text('Profile updated successfully!'), findsOneWidget);
 
@@ -98,5 +117,73 @@ void main() {
     expect(await prefs.getString(profileEmailKey), 'sam.example@example.com');
     expect(await prefs.getString(profilePhoneKey), '07700 900123');
     expect(await prefs.getBool(profileEmailNewsKey), isTrue);
+  });
+
+  // NEW: edit values that were already saved, then save again.
+  testWidgets('Editing saved values and saving updates the stored profile',
+      (WidgetTester tester) async {
+    SharedPreferencesAsyncPlatform.instance =
+        InMemorySharedPreferencesAsync.withData({
+      profileFirstNameKey: 'Sam',
+      profileLastNameKey: 'Example',
+      profileEmailKey: 'sam.example@example.com',
+      profilePhoneKey: '07700 900123',
+      profileEmailNewsKey: true,
+    });
+
+    await pumpSettings(tester);
+
+    final Finder fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Alex');
+    await tester.enterText(fields.at(2), 'alex.example@example.com');
+
+    await tester.ensureVisible(find.byType(SwitchListTile));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(SwitchListTile));
+    await tester.pumpAndSettle();
+
+    await tapSave(tester);
+
+    final SharedPreferencesAsync prefs = SharedPreferencesAsync();
+    expect(await prefs.getString(profileFirstNameKey), 'Alex');
+    expect(await prefs.getString(profileLastNameKey), 'Example');
+    expect(await prefs.getString(profileEmailKey), 'alex.example@example.com');
+    expect(await prefs.getString(profilePhoneKey), '07700 900123');
+    expect(await prefs.getBool(profileEmailNewsKey), isFalse);
+  });
+
+  // NEW: save, close the page, then open a fresh settings page.
+  testWidgets('Saved profile is still there when the form is reopened',
+      (WidgetTester tester) async {
+    await pumpSettings(tester);
+
+    final Finder fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Sam');
+    await tester.enterText(fields.at(1), 'Example');
+    await tester.enterText(fields.at(2), 'sam.example@example.com');
+    await tester.enterText(fields.at(3), '07700 900123');
+
+    await tester.ensureVisible(find.byType(SwitchListTile));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(SwitchListTile));
+    await tester.pumpAndSettle();
+
+    await tapSave(tester);
+
+    // Remove the page completely so its state is disposed.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpAndSettle();
+
+    // Open a brand new settings page: it must load the saved values.
+    await pumpSettings(tester);
+
+    expect(find.text('Sam'), findsOneWidget);
+    expect(find.text('Example'), findsOneWidget);
+    expect(find.text('sam.example@example.com'), findsOneWidget);
+    expect(find.text('07700 900123'), findsOneWidget);
+
+    final SwitchListTile newsSwitch =
+        tester.widget<SwitchListTile>(find.byType(SwitchListTile));
+    expect(newsSwitch.value, isTrue);
   });
 }
