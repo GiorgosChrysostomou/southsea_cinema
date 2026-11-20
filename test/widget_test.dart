@@ -26,6 +26,16 @@ class FakeMovieRepository extends MovieRepository {
   }
 }
 
+// A repository whose loading always fails.
+class FailingMovieRepository extends MovieRepository {
+  @override
+  Future<List<Movie>> loadMoviesFromAsset([
+    String path = 'assets/data/movies.json',
+  ]) {
+    return Future.error(Exception('could not read movies.json'));
+  }
+}
+
 Widget buildApp(MovieRepository repository) {
   return MaterialApp(
     home: HomeView(repository: repository),
@@ -79,6 +89,16 @@ void main() {
 
       expect(find.text('BOOK TICKETS'), findsNWidgets(2));
       expect(find.byType(ElevatedButton), findsNWidgets(2));
+    });
+
+    testWidgets('shows an error message when loading fails',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(buildApp(FailingMovieRepository()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Could not load films'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(MovieCard), findsNothing);
     });
   });
 
