@@ -1,8 +1,6 @@
 import 'package:southsea_cinema/database/cinema_db.dart';
 import 'package:southsea_cinema/models/booking.dart';
 
-// A CinemaDatabase that keeps bookings in a list, for widget tests.
-// It never opens a real database.
 class FakeCinemaDatabase extends CinemaDatabase {
   final List<Booking> saved = [];
   final bool failSaving;

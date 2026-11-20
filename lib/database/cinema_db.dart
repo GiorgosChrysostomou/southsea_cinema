@@ -7,7 +7,6 @@ class CinemaDatabase {
   static const String bookingTable = 'bookings';
   static const String _numberPrefix = 'SC-';
 
-  // Pass inMemoryDatabasePath in tests so nothing is written to disk.
   final String? _path;
   Database? _database;
 
@@ -65,12 +64,10 @@ class CinemaDatabase {
     ),
   ];
 
-  // Turns 4 into 'SC-0004'.
   static String formatBookingNumber(int number) {
     return '$_numberPrefix${number.toString().padLeft(4, '0')}';
   }
 
-  // The number part of a booking number, used for sorting and counting.
   static const String _numberPart = 'CAST(SUBSTR(bookingNumber, 4) AS INTEGER)';
 
   Future<int> saveBooking(Booking booking) async {
@@ -104,5 +101,4 @@ class CinemaDatabase {
   }
 }
 
-// The one database shared by the whole app.
 final CinemaDatabase cinemaDatabase = CinemaDatabase();

@@ -73,7 +73,6 @@ class _BasketViewState extends State<BasketView> {
     } catch (error) {
       if (!mounted) return;
 
-      // Saving failed, so the basket is left as it was.
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Could not save booking'),
@@ -82,7 +81,6 @@ class _BasketViewState extends State<BasketView> {
       return;
     }
 
-    // Only clear the basket once the booking is saved.
     basketRepository.clearBasket();
 
     if (!mounted) return;

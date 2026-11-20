@@ -107,7 +107,6 @@ void main() {
         posterPath: 'assets/alien.jpg',
       );
 
-      // Added in this order: The Batman, Dune, Alien. Dune is in the middle.
       basketRepository.addTicket(movie, quantity: 1);
       basketRepository.addTicket(dune, quantity: 1);
       basketRepository.addTicket(alien, quantity: 1);
@@ -119,7 +118,6 @@ void main() {
       expect(find.text('Alien'), findsOneWidget);
       expect(find.byIcon(Icons.delete), findsNWidgets(3));
 
-      // .first and .last cannot reach the middle button, but its key can.
       final Finder deleteDune = find.byKey(const Key('delete-2'));
       expect(deleteDune, findsOneWidget);
 
@@ -257,7 +255,6 @@ void main() {
       await pumpBasket(tester, database);
       await tapCheckout(tester);
 
-      // Close the page completely, then open a new one.
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpAndSettle();
       await pumpBasket(tester, database);
@@ -268,7 +265,6 @@ void main() {
   });
 }
 
-// A database that always fails to load bookings.
 class BrokenCinemaDatabase extends FakeCinemaDatabase {
   @override
   Future<List<Booking>> getAllBookings() async {

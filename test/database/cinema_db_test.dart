@@ -157,7 +157,6 @@ void main() {
     test('database can be used again after closing', () async {
       await cinemaDb.close();
 
-      // A new in-memory database is created, with the samples again.
       expect((await cinemaDb.getAllBookings()).length, 3);
     });
   });

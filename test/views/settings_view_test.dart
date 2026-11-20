@@ -119,7 +119,6 @@ void main() {
     expect(await prefs.getBool(profileEmailNewsKey), isTrue);
   });
 
-  // NEW: edit values that were already saved, then save again.
   testWidgets('Editing saved values and saving updates the stored profile',
       (WidgetTester tester) async {
     SharedPreferencesAsyncPlatform.instance =
@@ -152,7 +151,6 @@ void main() {
     expect(await prefs.getBool(profileEmailNewsKey), isFalse);
   });
 
-  // NEW: save, close the page, then open a fresh settings page.
   testWidgets('Saved profile is still there when the form is reopened',
       (WidgetTester tester) async {
     await pumpSettings(tester);
@@ -170,11 +168,9 @@ void main() {
 
     await tapSave(tester);
 
-    // Remove the page completely so its state is disposed.
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pumpAndSettle();
 
-    // Open a brand new settings page: it must load the saved values.
     await pumpSettings(tester);
 
     expect(find.text('Sam'), findsOneWidget);

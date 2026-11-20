@@ -15,18 +15,14 @@ class BasketItem {
 class BasketRepository {
   final Map<String, BasketItem> _items = {};
 
-  // Get all basket items
   List<BasketItem> get items => _items.values.toList();
 
-  // Get total number of tickets
   int get totalTickets =>
       _items.values.fold(0, (total, item) => total + item.quantity);
 
-  // Calculate basket total
   double get total =>
       _items.values.fold(0.0, (sum, item) => sum + item.totalPrice);
 
-  // Add tickets to basket
   void addTicket(Movie movie, {int quantity = 1}) {
     if (quantity <= 0) {
       throw ArgumentError('Quantity must be greater than zero');
@@ -42,7 +38,6 @@ class BasketRepository {
     }
   }
 
-  // Remove tickets from basket
   void removeTicket(Movie movie, {int quantity = 1}) {
     if (quantity <= 0) {
       throw ArgumentError('Quantity must be greater than zero');
@@ -59,7 +54,6 @@ class BasketRepository {
     }
   }
 
-  // Clear the entire basket
   void clearBasket() {
     _items.clear();
   }

@@ -4,7 +4,6 @@ import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/widgets/primary_button.dart';
 import 'package:southsea_cinema/widgets/nav_drawer.dart';
 
-// Keys the profile is stored under.
 const String profileFirstNameKey = 'profile_first_name';
 const String profileLastNameKey = 'profile_last_name';
 const String profileEmailKey = 'profile_email';

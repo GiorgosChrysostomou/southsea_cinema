@@ -8,7 +8,6 @@ import 'package:southsea_cinema/views/home_view.dart';
 
 import '../helpers/fake_cinema_database.dart';
 
-// Hands HomeView films that were already read from movies.json.
 class LoadedMovieRepository extends MovieRepository {
   final List<Movie> movies;
 
@@ -56,7 +55,6 @@ void main() {
         (WidgetTester tester) async {
       final FakeCinemaDatabase database = FakeCinemaDatabase();
 
-      // Read the real movies.json (real file I/O, so outside the fake clock).
       final List<Movie> movies = (await tester.runAsync(
         () => MovieRepository().loadMoviesFromAsset(),
       ))!;
@@ -71,7 +69,6 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Add 2 tickets for the first film.
       await tester.tap(find.text('BOOK TICKETS').at(0));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.byType(DropdownButton<int>));
@@ -91,7 +88,6 @@ void main() {
           find.text('Added 2 tickets for ${movies[0].title}'), findsOneWidget);
       expect(basketRepository.totalTickets, 2);
 
-      // Back to the home page, then add 1 ticket for the second film.
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
 
@@ -113,7 +109,6 @@ void main() {
       expect(basketRepository.totalTickets, 3);
       expect(basketRepository.total, 22.5);
 
-      // Back to the home page and open the basket from the drawer.
       await tester.tap(find.byIcon(Icons.arrow_back));
       await tester.pumpAndSettle();
       await tester.tap(find.byIcon(Icons.menu));
@@ -125,7 +120,6 @@ void main() {
       expect(find.text(movies[1].title), findsOneWidget);
       expect(find.text('Total: £22.50'), findsOneWidget);
 
-      // Remove the first film from the basket.
       await tester.tap(find.byIcon(Icons.delete).first);
       await tester.pumpAndSettle();
 
@@ -134,7 +128,6 @@ void main() {
       expect(basketRepository.totalTickets, 1);
       expect(find.text('Total: £7.50'), findsOneWidget);
 
-      // Checkout saves a numbered booking, then empties the basket.
       await tester.ensureVisible(find.text('CHECKOUT'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('CHECKOUT'));
