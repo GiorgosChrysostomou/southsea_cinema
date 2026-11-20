@@ -6,7 +6,7 @@ import 'package:southsea_cinema/repositories/movie_repository.dart';
 import 'package:southsea_cinema/views/basket_view.dart';
 import 'package:southsea_cinema/views/home_view.dart';
 
-import 'helpers/fake_cinema_database.dart';
+import '../helpers/fake_cinema_database.dart';
 
 // Hands HomeView films that were already read from movies.json.
 class LoadedMovieRepository extends MovieRepository {

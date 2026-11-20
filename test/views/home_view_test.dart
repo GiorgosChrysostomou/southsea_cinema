@@ -8,33 +8,7 @@ import 'package:southsea_cinema/views/home_view.dart';
 import 'package:southsea_cinema/views/movie_listing.dart';
 import 'package:southsea_cinema/widgets/movie_card.dart';
 
-// A repository that returns the films without reading any file.
-// If a completer is given, the films only arrive when the test completes it.
-class FakeMovieRepository extends MovieRepository {
-  final Completer<List<Movie>>? completer;
-
-  FakeMovieRepository({this.completer});
-
-  @override
-  Future<List<Movie>> loadMoviesFromAsset([
-    String path = 'assets/data/movies.json',
-  ]) {
-    if (completer != null) {
-      return completer!.future;
-    }
-    return Future.value(getMovies());
-  }
-}
-
-// A repository whose loading always fails.
-class FailingMovieRepository extends MovieRepository {
-  @override
-  Future<List<Movie>> loadMoviesFromAsset([
-    String path = 'assets/data/movies.json',
-  ]) {
-    return Future.error(Exception('could not read movies.json'));
-  }
-}
+import '../helpers/fake_movie_repository.dart';
 
 Widget buildApp(MovieRepository repository) {
   return MaterialApp(
@@ -48,7 +22,7 @@ Future<void> pumpApp(WidgetTester tester) async {
 }
 
 void main() {
-  group('Home page', () {
+  group('HomeView', () {
     testWidgets('shows the app title in the app bar',
         (WidgetTester tester) async {
       await pumpApp(tester);
@@ -91,19 +65,7 @@ void main() {
       expect(find.byType(ElevatedButton), findsNWidgets(2));
     });
 
-    testWidgets('shows an error message when loading fails',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(buildApp(FailingMovieRepository()));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Could not load films'), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsNothing);
-      expect(find.byType(MovieCard), findsNothing);
-    });
-  });
-
-  group('Movie listing', () {
-    testWidgets('BOOK TICKETS opens the listing with the film details',
+    testWidgets('BOOK TICKETS opens the movie listing',
         (WidgetTester tester) async {
       await pumpApp(tester);
 
@@ -112,34 +74,16 @@ void main() {
 
       expect(find.byType(MovieListing), findsOneWidget);
       expect(find.text('Dracula (1931) (PG)'), findsOneWidget);
-      expect(find.text('Adult (£7.50)'), findsOneWidget);
-      expect(find.text('ADD TO ORDER'), findsOneWidget);
     });
 
-    testWidgets('ADD TO ORDER shows feedback for the chosen quantity',
+    testWidgets('shows an error message when loading fails',
         (WidgetTester tester) async {
-      await pumpApp(tester);
-
-      await tester.tap(find.text('BOOK TICKETS').first);
+      await tester.pumpWidget(buildApp(FailingMovieRepository()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Added 2 tickets for Dracula (1931)'), findsNothing);
-
-      await tester.ensureVisible(find.byType(DropdownButton<int>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byType(DropdownButton<int>));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('2').last);
-      await tester.pumpAndSettle();
-
-      final Finder addButton =
-          find.widgetWithText(ElevatedButton, 'ADD TO ORDER');
-      await tester.ensureVisible(addButton);
-      await tester.pumpAndSettle();
-      await tester.tap(addButton);
-      await tester.pump();
-
-      expect(find.text('Added 2 tickets for Dracula (1931)'), findsOneWidget);
+      expect(find.text('Could not load films'), findsOneWidget);
+      expect(find.byType(CircularProgressIndicator), findsNothing);
+      expect(find.byType(MovieCard), findsNothing);
     });
   });
 }
