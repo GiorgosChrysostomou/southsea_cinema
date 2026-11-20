@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:southsea_cinema/models/booking.dart';
 import 'package:southsea_cinema/models/movie.dart';
 import 'package:southsea_cinema/repositories/basket_repository.dart';
 import 'package:southsea_cinema/views/basket_view.dart';
-import 'package:southsea_cinema/models/booking.dart';
 
 import '../helpers/fake_cinema_database.dart';
 
@@ -82,6 +82,63 @@ void main() {
       await tester.pump();
 
       expect(find.text('Your basket is empty'), findsOneWidget);
+    });
+
+    testWidgets('deleting the middle film leaves the other two',
+        (WidgetTester tester) async {
+      final Movie dune = Movie(
+        id: '2',
+        title: 'Dune',
+        synopsis: 'A desert planet film',
+        ageRating: '12A',
+        runtime: '2h 35m',
+        screeningTime: '20:00',
+        ticketPrice: 8.00,
+        posterPath: 'assets/dune.jpg',
+      );
+      final Movie alien = Movie(
+        id: '3',
+        title: 'Alien',
+        synopsis: 'A space horror film',
+        ageRating: '18',
+        runtime: '1h 57m',
+        screeningTime: '21:30',
+        ticketPrice: 9.00,
+        posterPath: 'assets/alien.jpg',
+      );
+
+      // Added in this order: The Batman, Dune, Alien. Dune is in the middle.
+      basketRepository.addTicket(movie, quantity: 1);
+      basketRepository.addTicket(dune, quantity: 1);
+      basketRepository.addTicket(alien, quantity: 1);
+
+      await pumpBasket(tester, FakeCinemaDatabase());
+
+      expect(find.text('The Batman'), findsOneWidget);
+      expect(find.text('Dune'), findsOneWidget);
+      expect(find.text('Alien'), findsOneWidget);
+      expect(find.byIcon(Icons.delete), findsNWidgets(3));
+
+      // .first and .last cannot reach the middle button, but its key can.
+      final Finder deleteDune = find.byKey(const Key('delete-2'));
+      expect(deleteDune, findsOneWidget);
+
+      await tester.ensureVisible(deleteDune);
+      await tester.pumpAndSettle();
+      await tester.tap(deleteDune);
+      await tester.pumpAndSettle();
+
+      expect(find.text('The Batman'), findsOneWidget);
+      expect(find.text('Dune'), findsNothing);
+      expect(find.text('Alien'), findsOneWidget);
+
+      expect(find.byKey(const Key('delete-1')), findsOneWidget);
+      expect(find.byKey(const Key('delete-2')), findsNothing);
+      expect(find.byKey(const Key('delete-3')), findsOneWidget);
+      expect(find.byIcon(Icons.delete), findsNWidgets(2));
+
+      expect(basketRepository.items.length, 2);
+      expect(find.text('Total: £19.00'), findsOneWidget);
     });
   });
 
