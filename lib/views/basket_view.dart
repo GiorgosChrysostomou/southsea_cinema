@@ -111,9 +111,15 @@ class _BasketViewState extends State<BasketView> {
                   PrimaryButton(
                     label: 'CHECKOUT',
                     onPressed: () {
+                      // Temporary checkout: just empties the in-memory basket.
+                      // Saved bookings come in Worksheet 7.
+                      setState(() {
+                        basketRepository.clearBasket();
+                      });
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Checkout coming soon!'),
+                          content: Text('Checkout complete'),
                         ),
                       );
                     },

@@ -76,4 +76,21 @@ void main() {
 
     expect(find.text('Your basket is empty'), findsOneWidget);
   });
+
+  testWidgets('Checkout clears the basket', (WidgetTester tester) async {
+    basketRepository.addTicket(movie, quantity: 2);
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: BasketView(),
+      ),
+    );
+
+    await tester.tap(find.text('CHECKOUT'));
+    await tester.pump();
+
+    expect(find.text('Checkout complete'), findsOneWidget);
+    expect(find.text('Your basket is empty'), findsOneWidget);
+    expect(basketRepository.items, isEmpty);
+  });
 }

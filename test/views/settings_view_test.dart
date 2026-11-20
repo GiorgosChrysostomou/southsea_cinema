@@ -1,11 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:southsea_cinema/views/settings_view.dart';
 
 void main() {
-  testWidgets('Settings form displays all fields',
-      (WidgetTester tester) async {
+  testWidgets('Settings form displays all fields', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: SettingsView(),

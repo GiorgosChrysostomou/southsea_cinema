@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:southsea_cinema/constants.dart';
 import 'package:southsea_cinema/widgets/primary_button.dart';
@@ -14,17 +13,13 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _firstNameController =
-      TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
 
-  final TextEditingController _lastNameController =
-      TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
 
-  final TextEditingController _emailController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  final TextEditingController _phoneController =
-      TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   @override
   void dispose() {
@@ -67,16 +62,12 @@ class _SettingsViewState extends State<SettingsView> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 24),
-
               const Text(
                 'First Name',
                 style: TextStyle(color: cinemaFontWhite),
               ),
-
               const SizedBox(height: 8),
-
               TextFormField(
                 controller: _firstNameController,
                 decoration: const InputDecoration(
@@ -92,16 +83,12 @@ class _SettingsViewState extends State<SettingsView> {
                   return null;
                 },
               ),
-
               const SizedBox(height: 20),
-
               const Text(
                 'Last Name',
                 style: TextStyle(color: cinemaFontWhite),
               ),
-
               const SizedBox(height: 8),
-
               TextFormField(
                 controller: _lastNameController,
                 decoration: const InputDecoration(
@@ -117,16 +104,12 @@ class _SettingsViewState extends State<SettingsView> {
                   return null;
                 },
               ),
-
               const SizedBox(height: 20),
-
               const Text(
                 'Email Address',
                 style: TextStyle(color: cinemaFontWhite),
               ),
-
               const SizedBox(height: 8),
-
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -138,23 +121,18 @@ class _SettingsViewState extends State<SettingsView> {
                 ),
                 validator: (value) {
                   if (value == null ||
-                      !RegExp(r'^[^@]+@[^@]+\.[^@]+$')
-                          .hasMatch(value.trim())) {
+                      !RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(value.trim())) {
                     return 'Please enter a valid email address';
                   }
                   return null;
                 },
               ),
-
               const SizedBox(height: 20),
-
               const Text(
                 'Phone Number',
                 style: TextStyle(color: cinemaFontWhite),
               ),
-
               const SizedBox(height: 8),
-
               TextFormField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
@@ -165,16 +143,13 @@ class _SettingsViewState extends State<SettingsView> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null ||
-                      value.trim().isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return 'Please enter your phone number';
                   }
                   return null;
                 },
               ),
-
               const SizedBox(height: 30),
-
               PrimaryButton(
                 label: 'SAVE CHANGES',
                 onPressed: _saveProfile,
