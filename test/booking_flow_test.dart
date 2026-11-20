@@ -6,6 +6,8 @@ import 'package:southsea_cinema/repositories/movie_repository.dart';
 import 'package:southsea_cinema/views/basket_view.dart';
 import 'package:southsea_cinema/views/home_view.dart';
 
+import 'helpers/fake_cinema_database.dart';
+
 // Hands HomeView films that were already read from movies.json.
 class LoadedMovieRepository extends MovieRepository {
   final List<Movie> movies;
@@ -52,6 +54,8 @@ void main() {
 
     testWidgets('add tickets, remove one film and check out',
         (WidgetTester tester) async {
+      final FakeCinemaDatabase database = FakeCinemaDatabase();
+
       // Read the real movies.json (real file I/O, so outside the fake clock).
       final List<Movie> movies = (await tester.runAsync(
         () => MovieRepository().loadMoviesFromAsset(),
@@ -61,7 +65,7 @@ void main() {
         MaterialApp(
           home: HomeView(repository: LoadedMovieRepository(movies)),
           routes: {
-            '/basket': (context) => const BasketView(),
+            '/basket': (context) => BasketView(database: database),
           },
         ),
       );
@@ -130,14 +134,20 @@ void main() {
       expect(basketRepository.totalTickets, 1);
       expect(find.text('Total: £7.50'), findsOneWidget);
 
-      // Temporary checkout empties the in-memory basket.
+      // Checkout saves a numbered booking, then empties the basket.
+      await tester.ensureVisible(find.text('CHECKOUT'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('CHECKOUT'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Checkout complete'), findsOneWidget);
+      expect(find.text('Booking SC-0001 confirmed'), findsOneWidget);
       expect(find.text('Your basket is empty'), findsOneWidget);
       expect(basketRepository.items, isEmpty);
       expect(basketRepository.total, 0.0);
+
+      expect(database.saved.length, 1);
+      expect(database.saved.first.summary, '1 x ${movies[1].title}');
+      expect(database.saved.first.total, 7.5);
     });
   });
 }

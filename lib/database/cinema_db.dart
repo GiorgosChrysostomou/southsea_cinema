@@ -103,3 +103,6 @@ class CinemaDatabase {
     _database = null;
   }
 }
+
+// The one database shared by the whole app.
+final CinemaDatabase cinemaDatabase = CinemaDatabase();
